@@ -2,7 +2,7 @@
   "name": "node-createap",
   "version": "0.0.0",
   "description": "Node wrapper for create_ap",
-  "main": "index.js",
+  "main": "create_ap.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

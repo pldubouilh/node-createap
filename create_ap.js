@@ -21,7 +21,7 @@ module.exports = function(params){
   self.listRunning = function() {
     exec(params.path + ' --list-running', function (error, stdout, stderr){
       if(error)
-        console.log(stderr)
+        console.warn(stderr)
       else
         console.log(stdout)
     })
@@ -30,7 +30,7 @@ module.exports = function(params){
   self.listClients = function() {
     exec(params.path + ' --list-clients ' + self.proc.pid, function (error, stdout, stderr){
       if(error)
-        console.log(stderr)
+        console.warn(stderr)
       else
         console.log(stdout)
     })
@@ -45,7 +45,7 @@ module.exports = function(params){
     }
 
     // make silent ! {silent:true}
-    self.proc = exec( Object.values(params).join(' ') , function (error, stdout, stderr) {
+    self.proc = exec( Object.values(params).join(' ') , { silent:parms.silent }, function (error, stdout, stderr) {
       if(error)
         self.die('ERROR: can\'t start create_ap', stderr)
     });
@@ -55,11 +55,6 @@ module.exports = function(params){
     console.log('Gracefully stopping create_ap...')
     exec( params.path + ' --stop ' + params.wirelessInterface )
   }
-
-  process.on('SIGINT', function () {
-    self.stop()
-    process.exit();
-  });
 
   // Sanity check
   if(params.path === undefined && params.path.length === 0)
@@ -74,6 +69,8 @@ module.exports = function(params){
     self.die('ERROR: No wifi AP name provided')
   if(params.wifiWPA === undefined && params.path.wifiWPA === 0)
     self.die('ERROR: No WPA key provided')
+  if(params.silent === undefined)
+    params.silent = true
 
   // Checking existence of create_Ap
   var out = exec('file ' + params.path + ' | grep shell', {silent:true});

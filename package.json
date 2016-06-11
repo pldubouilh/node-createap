@@ -1,0 +1,28 @@
+{
+  "name": "node-createap",
+  "version": "0.0.0",
+  "description": "Node wrapper for create_ap",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pldubouilh/node-createap.git"
+  },
+  "keywords": [
+    "create-ap",
+    "hostapd",
+    "create_ap",
+    "dnsmasq"
+  ],
+  "author": "pldubouilh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pldubouilh/node-createap/issues"
+  },
+  "homepage": "https://github.com/pldubouilh/node-createap#readme",
+  "dependencies": {
+    "shelljs": "^0.7.0"
+  }
+}

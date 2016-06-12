@@ -24,28 +24,27 @@ function createap (params){
     process.exit(1);
   }
 
-  self.listRunning = function() {
+  self.listRunning = function(cb) {
     var out = exec( params.path + ' --list-running', {silent:true})
     if(out.stderr)
       console.warn('WARNING: Can\'t run list-running' + out.stdout + '\n' + out.stderr)
     else if (out.stdout)
-      console.log(out.stdout)
+      return cb(out.stdout)
   }
 
-  self.listClients = function() {
+  self.listClients = function(cb) {
     var out = exec( params.path + ' --list-clients ' + params.wirelessInterface, {silent:true})
     if(out.stderr)
       console.warn('WARNING: Can\'t run list-clients' + out.stdout + '\n' + out.stderr)
     else if (out.stdout)
-      console.log(out.stdout)
+      return cb(out.stdout)
   }
 
-  self.start = function() {
+  self.start = function(cb) {
     console.log('Starting AP');
 
     if(self.proc !== undefined){
-      console.log('create_ap already running');
-      return
+      return cb('create_ap already running')
     }
 
     self.proc = exec( self.prepValues(), { silent:params.silent }, function (error, stdout, stderr) {
@@ -59,26 +58,23 @@ function createap (params){
 
       self.out = self.out + data.toString()
       if(data.toString().indexOf('Setup of interface done.') !== -1){
-        self.emit('ready')
         self.ready = true
+        clearTimeout(timerTimeout)
+        return cb('done')
       }
     })
 
-    setTimeout(function () {
-      if(self.ready)
-        return
-      else{
-        if(params.silent)
-          self.die('ERROR: Timeout.', self.out)
-        else
-          self.die('ERROR: Timeout.')
-      }
+    var timerTimeout = setTimeout(function () {
+      if(params.silent)
+        self.die('ERROR: Timeout.', self.out)
+      else
+        self.die('ERROR: Timeout.')
     }, 8000);
   }
 
-  self.stop = function(){
-    console.log('Gracefully stopping create_ap...')
+  self.stop = function(cb){
     exec( params.path + ' --stop ' + params.wirelessInterface )
+    return cb('stopped')
   }
 
   // Sanity check

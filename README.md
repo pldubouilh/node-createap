@@ -7,7 +7,7 @@ Note for Raspbian-RPI3 users:
   * `--no-virt` option required
   * running fine with hostapd v2.5
   * dnsmasq & hostapd daemons disabled (`sudo systemctl disable hostapd // dnsmasq`)
-  * disabled all wireless settings in `nano /etc/network/interfaces`, so it's only `allow-hotplug wlan1` and `allow-hotplug wlan0`
+  * disabled all wireless settings in `/etc/network/interfaces`, so it's only `allow-hotplug wlan1` and `allow-hotplug wlan0`
 
 ## Usage :
 

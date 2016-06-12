@@ -1,6 +1,6 @@
 {
   "name": "node-createap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node wrapper for create_ap",
   "main": "create_ap.js",
   "scripts": {
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/pldubouilh/node-createap#readme",
   "dependencies": {
+    "inherits": "^2.0.1",
     "shelljs": "^0.7.0"
   }
 }

@@ -1,6 +1,12 @@
 require('shelljs/global');
 
-module.exports = function(params){
+var EventEmitter = require('events').EventEmitter
+var inherits = require('inherits')
+
+inherits(createap, EventEmitter)
+
+function createap (params){
+
   var self = this
 
   self.prepValues = function () {
@@ -47,6 +53,27 @@ module.exports = function(params){
         self.die('ERROR: can\'t start create_ap', stderr)
       return
     });
+
+    self.out = ''
+    self.proc.stdout.on('data', function (data){
+
+      self.out = self.out + data.toString()
+      if(data.toString().indexOf('Setup of interface done.') !== -1){
+        self.emit('ready')
+        self.ready = true
+      }
+    })
+
+    setTimeout(function () {
+      if(self.ready)
+        return
+      else{
+        if(params.silent)
+          self.die('ERROR: Timeout.', self.out)
+        else
+          self.die('ERROR: Timeout.')
+      }
+    }, 8000);
   }
 
   self.stop = function(){
@@ -77,3 +104,5 @@ module.exports = function(params){
   else
     params.path = 'sudo ' + params.path
 }
+
+module.exports = createap

@@ -3,12 +3,12 @@ require('shelljs/global');
 module.exports = function(params){
   var self = this
 
-  Object.values = function (obj) {
+  self.prepValues = function () {
     var vals = [];
-    for( var key in obj )
-      if ( obj.hasOwnProperty(key) )
-        vals.push(obj[key]);
-    return vals;
+    for( var key in params )
+      if ( key !== 'silent' )
+        vals.push(params[key]);
+    return vals.join(' ');
   }
 
   self.die = function(msg, data){
@@ -19,21 +19,19 @@ module.exports = function(params){
   }
 
   self.listRunning = function() {
-    exec(params.path + ' --list-running', function (error, stdout, stderr){
-      if(error)
-        console.warn(stderr)
-      else
-        console.log(stdout)
-    })
+    var out = exec( params.path + ' --list-running', {silent:true})
+    if(out.stderr)
+      console.warn('WARNING: Can\'t run list-running' + out.stdout + '\n' + out.stderr)
+    else if (out.stdout)
+      console.log(out.stdout)
   }
 
   self.listClients = function() {
-    exec(params.path + ' --list-clients ' + self.proc.pid, function (error, stdout, stderr){
-      if(error)
-        console.warn(stderr)
-      else
-        console.log(stdout)
-    })
+    var out = exec( params.path + ' --list-clients ' + params.wirelessInterface, {silent:true})
+    if(out.stderr)
+      console.warn('WARNING: Can\'t run list-clients' + out.stdout + '\n' + out.stderr)
+    else if (out.stdout)
+      console.log(out.stdout)
   }
 
   self.start = function() {
@@ -44,10 +42,10 @@ module.exports = function(params){
       return
     }
 
-    // make silent ! {silent:true}
-    self.proc = exec( Object.values(params).join(' ') , { silent:parms.silent }, function (error, stdout, stderr) {
+    self.proc = exec( self.prepValues(), { silent:params.silent }, function (error, stdout, stderr) {
       if(error)
         self.die('ERROR: can\'t start create_ap', stderr)
+      return
     });
   }
 
@@ -73,9 +71,9 @@ module.exports = function(params){
     params.silent = true
 
   // Checking existence of create_Ap
-  var out = exec('file ' + params.path + ' | grep shell', {silent:true});
+  var out = exec('file ' + params.path + ' | grep shell', {silent:true})
   if(out.stderr)
-    self.die('ERROR: create_ap not found at path provided', stderr)
+    self.die('ERROR: create_ap not found at path provided', out.stderr)
   else
     params.path = 'sudo ' + params.path
 }

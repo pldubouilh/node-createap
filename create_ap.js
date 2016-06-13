@@ -66,7 +66,7 @@ function createap (params){
 
     var timerTimeout = setTimeout(function () {
       if(params.silent)
-        self.die('ERROR: Timeout.', self.out)
+        self.die('ERROR: Timeout.', self.out) // print diying message is program silented
       else
         self.die('ERROR: Timeout.')
     }, 8000);
@@ -88,7 +88,7 @@ function createap (params){
     self.die('ERROR: No wired interface provided')
   if(params.wifiApName === undefined && params.wifiApName.length === 0)
     self.die('ERROR: No wifi AP name provided')
-  if(params.wifiWPA === undefined && params.path.wifiWPA === 0)
+  if(params.wifiWPA === undefined)
     self.die('ERROR: No WPA key provided')
   if(params.silent === undefined)
     params.silent = true

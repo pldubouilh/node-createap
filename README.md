@@ -11,7 +11,7 @@ Note for Raspbian-RPI3 users:
 
 ## Usage :
 
-`npm install --save node-createap`
+`npm install node-createap`
 
 then...
 

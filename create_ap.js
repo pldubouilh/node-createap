@@ -10,11 +10,10 @@ function createap (params){
   var self = this
 
   self.prepValues = function () {
-    var vals = [];
-    for( var key in params )
-      if ( key !== 'silent' )
-        vals.push(params[key]);
-    return vals.join(' ');
+    if(params.wifiWPA === undefined || params.wifiApName.length === 0)
+      return params.path + ' ' + params.options + ' ' + params.wirelessInterface + ' ' + params.wiredInterface + ' ' + params.wifiApName
+    else
+      return params.path + ' ' + params.options + ' ' + params.wirelessInterface + ' ' + params.wiredInterface + ' ' + params.wifiApName + ' ' + params.wifiWPA
   }
 
   self.die = function(msg, data){
@@ -54,8 +53,8 @@ function createap (params){
     });
 
     self.out = ''
+    
     self.proc.stdout.on('data', function (data){
-
       self.out = self.out + data.toString()
       if(data.toString().indexOf('Setup of interface done.') !== -1){
         self.ready = true
@@ -78,18 +77,16 @@ function createap (params){
   }
 
   // Sanity check
-  if(params.path === undefined && params.path.length === 0)
+  if(params.path === undefined || params.path.length === 0)
     self.die('ERROR: No path provided')
-  if(params.options === undefined && params.options.length === 0)
+  if(params.options === undefined || params.options.length === 0)
     self.die('ERROR: No options provided')
-  if(params.wirelessInterface === undefined && params.wirelessInterface.length === 0)
+  if(params.wirelessInterface === undefined || params.wirelessInterface.length === 0)
     self.die('ERROR: No wireless interface provided')
-  if(params.wiredInterface === undefined && params.wiredInterface.length === 0)
+  if(params.wiredInterface === undefined || params.wiredInterface.length === 0)
     self.die('ERROR: No wired interface provided')
-  if(params.wifiApName === undefined && params.wifiApName.length === 0)
+  if(params.wifiApName === undefined || params.wifiApName.length === 0)
     self.die('ERROR: No wifi AP name provided')
-  if(params.wifiWPA === undefined)
-    self.die('ERROR: No WPA key provided')
   if(params.silent === undefined)
     params.silent = true
 
